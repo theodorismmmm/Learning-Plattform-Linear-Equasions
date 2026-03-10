@@ -34,10 +34,10 @@ function activateLicense() {
   const input = document.getElementById('licenseInput');
   const errEl = document.getElementById('licenseErr');
   const key = input.value.trim().toUpperCase();
-  if (!key) { errEl.textContent = 'Please enter a license key.'; return; }
+  if (!key) { errEl.textContent = 'Bitte gib einen Lizenzschlüssel ein.'; return; }
   const role = validateKey(key);
   if (!role) {
-    errEl.textContent = '✗ Invalid license key. Contact your teacher.';
+    errEl.textContent = '✗ Ungültiger Lizenzschlüssel. Wende dich an deinen Lehrer.';
     input.classList.add('anim-wrong');
     setTimeout(() => input.classList.remove('anim-wrong'), 500);
     return;
@@ -147,112 +147,163 @@ function restoreHearts() {
 const CHAPTERS = [
   {
     id: 0,
-    icon: '🎯',
-    title: 'What is a Linear Equation?',
-    desc: 'Understand the form y = mx + b',
+    icon: '🗺️',
+    title: 'Das Koordinatensystem',
+    desc: 'Lerne die Grundlagen des Koordinatensystems kennen',
     xpReward: 50,
     exercises: [
       {
         type: 'multiple-choice',
-        question: 'Which of these is a linear equation?',
-        options: ['y = x²', 'y = 2x + 3', 'y = √x', 'y = 1/x'],
-        answer: 'y = 2x + 3'
-      },
-      {
-        type: 'fill-blank',
-        question: 'In y = 3x + 5, the slope is ___ and the y-intercept is ___',
-        blanks: ['3', '5'],
-        hint: 'y = mx + b → m is slope, b is y-intercept'
-      },
-      {
-        type: 'multiple-choice',
-        question: 'What does \'m\' represent in y = mx + b?',
-        options: ['y-intercept', 'slope', 'x-value', 'constant'],
-        answer: 'slope'
+        question: 'Wie nennt man die waagerechte (horizontale) Achse im Koordinatensystem?',
+        options: ['x-Achse', 'y-Achse', 'z-Achse', 'Ursprung'],
+        answer: 'x-Achse'
       },
       {
         type: 'true-false',
-        question: 'y = 4 is a linear equation.',
+        question: 'Der Ursprung des Koordinatensystems hat die Koordinaten (0, 0).',
         answer: true,
-        hint: 'y = 4 is a horizontal line — it is linear (slope = 0, y-intercept = 4)'
+        hint: 'Der Ursprung ist der Schnittpunkt von x-Achse und y-Achse – er liegt immer bei (0, 0)'
       },
       {
         type: 'multiple-choice',
-        question: 'Which of these describes the graph of a linear function?',
-        options: [
-          'A U-shaped parabola',
-          'A straight line',
-          'A wavy curve',
-          'A circle'
-        ],
-        answer: 'A straight line'
+        question: 'Ein Punkt hat die Koordinaten (3, 5).\nWas bedeutet die erste Zahl (3)?',
+        options: ['den y-Wert (senkrecht)', 'den x-Wert (waagerecht)', 'den Abstand vom Ursprung', 'den Quadranten'],
+        answer: 'den x-Wert (waagerecht)'
       },
       {
-        type: 'fill-blank',
-        question: 'In y = -2x + 7, the slope is ___',
-        blanks: ['-2'],
-        hint: 'The coefficient of x is the slope'
+        type: 'coord-task',
+        question: 'Das Koordinatensystem zeigt den Punkt A (4, 3).\nWelchen y-Wert hat der Punkt A?\n(Der Punkt ist im Graphen markiert)',
+        functions: [],
+        points: [{ x: 4, y: 3, label: 'A(4,3)' }],
+        answer: 3,
+        inputType: 'number',
+        hint: 'Lies auf der senkrechten y-Achse ab: Der Punkt liegt bei y = 3'
+      },
+      {
+        type: 'coord-task',
+        question: 'Die Gerade y = x ist eingezeichnet.\nBei welchem y-Wert schneidet sie die y-Achse?\n(Setze x = 0 ein)',
+        functions: ['x'],
+        points: [{ x: 0, y: 0, label: '(0,0)' }],
+        answer: 0,
+        inputType: 'number',
+        hint: 'Setze x = 0 ein: y = 0. Die Gerade schneidet die y-Achse bei y = 0'
+      },
+      {
+        type: 'multiple-choice',
+        question: 'In welchem Quadranten liegt der Punkt (−2, 4)?',
+        options: ['1. Quadrant (x>0, y>0)', '2. Quadrant (x<0, y>0)', '3. Quadrant (x<0, y<0)', '4. Quadrant (x>0, y<0)'],
+        answer: '2. Quadrant (x<0, y>0)'
       }
     ]
   },
   {
     id: 1,
-    icon: '📈',
-    title: 'Slope & Y-Intercept',
-    desc: 'Calculate and identify slope and y-intercept',
+    icon: '🎯',
+    title: 'Was ist eine lineare Gleichung?',
+    desc: 'Verstehe die Form y = mx + b',
     xpReward: 50,
     exercises: [
       {
-        type: 'number-input',
-        question: 'Calculate the slope between the points (0, 0) and (3, 6).\nSlope = (y₂ − y₁) / (x₂ − x₁)',
-        answer: 2,
-        hint: 'Slope = (6 − 0) / (3 − 0) = 6 / 3 = 2'
-      },
-      {
         type: 'multiple-choice',
-        question: 'What is the y-intercept of the equation y = 5x − 3?',
-        options: ['5', '-3', '3', '0'],
-        answer: '-3'
-      },
-      {
-        type: 'number-input',
-        question: 'A line passes through (0, 4) with slope 2. What is y when x = 3?\ny = mx + b → y = 2(3) + 4',
-        answer: 10,
-        hint: 'y = 2 × 3 + 4 = 6 + 4 = 10'
-      },
-      {
-        type: 'coord-task',
-        question: 'The line y = x + 2 is shown. Where does it cross the y-axis? (Enter the y-intercept value)',
-        functions: ['x+2'],
-        points: [],
-        answer: 2,
-        inputType: 'number',
-        hint: 'The y-intercept is where x = 0. y = 0 + 2 = 2'
-      },
-      {
-        type: 'number-input',
-        question: 'What is the slope of a horizontal line?',
-        answer: 0,
-        hint: 'A horizontal line has no rise, so slope = rise/run = 0/anything = 0'
+        question: 'Welche dieser Gleichungen ist eine lineare Gleichung?',
+        options: ['y = x²', 'y = 2x + 3', 'y = √x', 'y = 1/x'],
+        answer: 'y = 2x + 3'
       },
       {
         type: 'fill-blank',
-        question: 'slope = (y₂ − y₁) / (___ − x₁)',
-        blanks: ['x₂'],
-        hint: 'The slope formula uses the difference in x-values in the denominator'
+        question: 'In y = 3x + 5 ist die Steigung ___ und der y-Achsenabschnitt ist ___',
+        blanks: ['3', '5'],
+        hint: 'y = mx + b → m ist die Steigung, b ist der y-Achsenabschnitt'
+      },
+      {
+        type: 'multiple-choice',
+        question: 'Was stellt „m" in y = mx + b dar?',
+        options: ['y-Achsenabschnitt', 'Steigung', 'x-Wert', 'Konstante'],
+        answer: 'Steigung'
+      },
+      {
+        type: 'true-false',
+        question: 'y = 4 ist eine lineare Gleichung.',
+        answer: true,
+        hint: 'y = 4 ist eine waagerechte Gerade – sie ist linear (Steigung = 0, y-Achsenabschnitt = 4)'
+      },
+      {
+        type: 'multiple-choice',
+        question: 'Wie sieht der Graph einer linearen Funktion aus?',
+        options: [
+          'Eine U-förmige Parabel',
+          'Eine Gerade',
+          'Eine wellenförmige Kurve',
+          'Ein Kreis'
+        ],
+        answer: 'Eine Gerade'
+      },
+      {
+        type: 'fill-blank',
+        question: 'In y = −2x + 7 ist die Steigung ___',
+        blanks: ['-2'],
+        hint: 'Der Koeffizient von x ist die Steigung'
       }
     ]
   },
   {
     id: 2,
+    icon: '📈',
+    title: 'Steigung & y-Achsenabschnitt',
+    desc: 'Berechne und bestimme Steigung und y-Achsenabschnitt',
+    xpReward: 50,
+    exercises: [
+      {
+        type: 'number-input',
+        question: 'Berechne die Steigung zwischen den Punkten (0, 0) und (3, 6).\nSteigung = (y₂ − y₁) / (x₂ − x₁)',
+        answer: 2,
+        hint: 'Steigung = (6 − 0) / (3 − 0) = 6 / 3 = 2'
+      },
+      {
+        type: 'multiple-choice',
+        question: 'Was ist der y-Achsenabschnitt der Gleichung y = 5x − 3?',
+        options: ['5', '-3', '3', '0'],
+        answer: '-3'
+      },
+      {
+        type: 'number-input',
+        question: 'Eine Gerade verläuft durch (0, 4) mit der Steigung 2. Wie groß ist y bei x = 3?\ny = mx + b → y = 2(3) + 4',
+        answer: 10,
+        hint: 'y = 2 × 3 + 4 = 6 + 4 = 10'
+      },
+      {
+        type: 'coord-task',
+        question: 'Die Gerade y = x + 2 ist dargestellt. Wo schneidet sie die y-Achse?\n(Gib den y-Achsenabschnitt ein)',
+        functions: ['x+2'],
+        points: [],
+        answer: 2,
+        inputType: 'number',
+        hint: 'Der y-Achsenabschnitt liegt bei x = 0. y = 0 + 2 = 2'
+      },
+      {
+        type: 'number-input',
+        question: 'Wie groß ist die Steigung einer waagerechten Geraden?',
+        answer: 0,
+        hint: 'Eine waagerechte Gerade hat keinen Anstieg (Steigung = 0/irgendwas = 0)'
+      },
+      {
+        type: 'fill-blank',
+        question: 'Steigung = (y₂ − y₁) / (___ − x₁)',
+        blanks: ['x₂'],
+        hint: 'Die Steigungsformel verwendet die Differenz der x-Werte im Nenner'
+      }
+    ]
+  },
+  {
+    id: 3,
     icon: '📐',
-    title: 'Graphing Linear Equations',
-    desc: 'Graph lines using the coordinate system',
+    title: 'Lineare Gleichungen zeichnen',
+    desc: 'Zeichne Geraden im Koordinatensystem',
     xpReward: 50,
     exercises: [
       {
         type: 'coord-task',
-        question: 'The graph shows y = 2x − 1. What is the y-value when x = 2?',
+        question: 'Der Graph zeigt y = 2x − 1. Welchen y-Wert hat die Gerade bei x = 2?',
         functions: ['2*x-1'],
         points: [{ x: 2, y: 3, label: 'x=2' }],
         answer: 3,
@@ -261,13 +312,13 @@ const CHAPTERS = [
       },
       {
         type: 'multiple-choice',
-        question: 'Which equation matches a line with slope −1 passing through (0, 3)?',
+        question: 'Welche Gleichung beschreibt eine Gerade mit Steigung −1 durch (0, 3)?',
         options: ['y = x + 3', 'y = −x + 3', 'y = 3x − 1', 'y = −x − 3'],
         answer: 'y = −x + 3'
       },
       {
         type: 'coord-task',
-        question: 'The graph shows y = 3x. What is the y-value when x = 2?\n(The point where x = 2 is highlighted)',
+        question: 'Der Graph zeigt y = 3x. Welchen y-Wert hat die Gerade bei x = 2?\n(Der Punkt bei x = 2 ist markiert)',
         functions: ['3*x'],
         points: [{ x: 2, y: 6, label: '(2, ?)' }],
         answer: 6,
@@ -276,13 +327,13 @@ const CHAPTERS = [
       },
       {
         type: 'number-input',
-        question: 'A line has slope 0.5 and passes through (0, −2).\nWhat is y when x = 6?\ny = 0.5x − 2',
+        question: 'Eine Gerade hat die Steigung 0,5 und schneidet die y-Achse bei (0, −2).\nWie groß ist y bei x = 6?\ny = 0,5x − 2',
         answer: 1,
-        hint: 'y = 0.5 × 6 − 2 = 3 − 2 = 1'
+        hint: 'y = 0,5 × 6 − 2 = 3 − 2 = 1'
       },
       {
         type: 'coord-task',
-        question: 'Two lines are shown: y = x (blue) and y = −x + 4 (red).\nAt which x-value do they intersect?',
+        question: 'Zwei Geraden sind eingezeichnet: y = x (blau) und y = −x + 4 (rot).\nBei welchem x-Wert schneiden sie sich?',
         functions: [
           { expr: 'x',     color: '#0066ff' },
           { expr: '-x+4',  color: '#cc0000' }
@@ -290,78 +341,77 @@ const CHAPTERS = [
         points: [{ x: 2, y: 2, label: '∩' }],
         answer: 2,
         inputType: 'number',
-        hint: 'Set x = −x + 4 → 2x = 4 → x = 2'
+        hint: 'Setze x = −x + 4 → 2x = 4 → x = 2'
       }
     ]
   },
   {
-    id: 3,
+    id: 4,
     icon: '⚖️',
-    title: 'Solving Linear Equations',
-    desc: 'Algebraically solve for x',
+    title: 'Lineare Gleichungen lösen',
+    desc: 'Gleichungen algebraisch nach x auflösen',
     xpReward: 50,
     exercises: [
       {
         type: 'number-input',
-        question: 'Solve for x:\n2x + 4 = 10',
+        question: 'Löse nach x auf:\n2x + 4 = 10',
         answer: 3,
         hint: '2x = 10 − 4 = 6 → x = 3'
       },
       {
         type: 'number-input',
-        question: 'Solve for x:\n3x − 9 = 0',
+        question: 'Löse nach x auf:\n3x − 9 = 0',
         answer: 3,
         hint: '3x = 9 → x = 3'
       },
       {
         type: 'number-input',
-        question: 'Solve for x:\n−x + 5 = 2',
+        question: 'Löse nach x auf:\n−x + 5 = 2',
         answer: 3,
         hint: '−x = 2 − 5 = −3 → x = 3'
       },
       {
         type: 'step-order',
-        question: 'Arrange these steps in the correct order to solve: 4x + 8 = 20',
+        question: 'Bringe diese Schritte in die richtige Reihenfolge, um 4x + 8 = 20 zu lösen:',
         steps: [
           '4x + 8 = 20',
-          'Subtract 8 from both sides: 4x = 12',
-          'Divide both sides by 4: x = 3',
-          'Check: 4(3) + 8 = 20 ✓'
+          'Subtrahiere 8 von beiden Seiten: 4x = 12',
+          'Dividiere beide Seiten durch 4: x = 3',
+          'Probe: 4(3) + 8 = 20 ✓'
         ],
-        // Steps are already in correct order — indices represent correct order
         answer: [0, 1, 2, 3],
-        hint: 'First subtract, then divide, then check'
+        hint: 'Zuerst subtrahieren, dann dividieren, dann Probe'
       },
       {
         type: 'number-input',
-        question: 'Solve for x:\n2(x + 3) = 14',
+        question: 'Löse nach x auf:\n2(x + 3) = 14',
         answer: 4,
-        hint: 'Expand: 2x + 6 = 14 → 2x = 8 → x = 4'
+        hint: 'Klammern auflösen: 2x + 6 = 14 → 2x = 8 → x = 4'
       },
       {
         type: 'multiple-choice',
-        question: 'Which value of x satisfies 5x = 25?',
+        question: 'Welcher x-Wert erfüllt 5x = 25?',
         options: ['3', '4', '5', '6'],
         answer: '5'
       }
     ]
   },
   {
-    id: 4,
+    id: 5,
     icon: '🌍',
-    title: 'Real-World Applications',
-    desc: 'Apply linear equations to real scenarios',
+    title: 'Anwendungen im Alltag',
+    desc: 'Lineare Gleichungen in realen Situationen anwenden',
     xpReward: 50,
     exercises: [
       {
         type: 'number-input',
-        question: '🚕 A taxi charges €2 base fare + €1.50 per km.\nHow much does an 8 km trip cost?\nCost = 1.50 × 8 + 2',
+        question: '🚕 Ein Taxi kostet 2 € Grundgebühr + 1,50 € pro km.\nWas kostet eine Fahrt von 8 km?\nKosten = 1,50 × 8 + 2',
         answer: 14,
-        hint: 'Cost = 1.50 × 8 + 2 = 12 + 2 = 14'
+        hint: 'Kosten = 1,50 × 8 + 2 = 12 + 2 = 14'
       },
       {
         type: 'coord-task',
-        question: '🌱 A plant grows 3 cm per week and starts at 5 cm.\nThe graph shows its growth: h = 3w + 5\nWhat is its height (cm) after 4 weeks?',
+        question: '🌱 Eine Pflanze wächst 3 cm pro Woche und ist am Anfang 5 cm groß.\nDer Graph zeigt ihr Wachstum: h = 3w + 5\nWie groß ist sie nach 4 Wochen (in cm)?',
         functions: ['3*x+5'],
         points: [{ x: 4, y: 17, label: 'w=4' }],
         answer: 17,
@@ -370,7 +420,7 @@ const CHAPTERS = [
       },
       {
         type: 'multiple-choice',
-        question: '💶 You start with €100 and spend €15 per day.\nWhich equation models the remaining money?',
+        question: '💶 Du hast 100 € und gibst täglich 15 € aus.\nWelche Gleichung beschreibt dein Guthaben?',
         options: [
           'y = 15x + 100',
           'y = −15x + 100',
@@ -381,20 +431,20 @@ const CHAPTERS = [
       },
       {
         type: 'number-input',
-        question: '🌡️ Temperature drops 2°C per hour starting at 20°C.\nT = −2h + 20\nAfter how many hours is the temperature 10°C?',
+        question: '🌡️ Die Temperatur sinkt stündlich um 2 °C, beginnend bei 20 °C.\nT = −2h + 20\nNach wie vielen Stunden beträgt die Temperatur 10 °C?',
         answer: 5,
         hint: '10 = −2h + 20 → 2h = 10 → h = 5'
       },
       {
         type: 'multiple-choice',
-        question: '🍰 A recipe needs 3 eggs per cake.\nWhich statement describes the graph of eggs vs. cakes?',
+        question: '🍰 Ein Rezept braucht 3 Eier pro Kuchen.\nWelche Aussage beschreibt den Graphen von Eiern gegen Kuchen?',
         options: [
-          'A straight line through the origin with slope 3',
-          'A horizontal line at y = 3',
-          'A curve that grows slowly',
-          'A line with y-intercept 3 and slope 0'
+          'Eine Gerade durch den Ursprung mit Steigung 3',
+          'Eine waagerechte Gerade bei y = 3',
+          'Eine langsam wachsende Kurve',
+          'Eine Gerade mit y-Achsenabschnitt 3 und Steigung 0'
         ],
-        answer: 'A straight line through the origin with slope 3'
+        answer: 'Eine Gerade durch den Ursprung mit Steigung 3'
       }
     ]
   }
@@ -446,7 +496,7 @@ function renderHeader() {
     ? Math.min(100, Math.round(((state.xp - prevXP) / (nextXP - prevXP)) * 100))
     : 100;
 
-  document.getElementById('hdrLevel').textContent = `LVL ${lvl}`;
+  document.getElementById('hdrLevel').textContent = `STUFE ${lvl}`;
   document.getElementById('hdrXPBar').style.width = pct + '%';
   document.getElementById('hdrXPLabel').textContent = nextXP
     ? `${state.xp} / ${nextXP} XP`
@@ -482,7 +532,7 @@ function renderHome() {
       (!completed && unlocked ? ' active-chapter' : '');
 
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `Chapter ${i + 1}: ${ch.title}${!unlocked ? ' (locked)' : ''}`);
+    card.setAttribute('aria-label', `Kapitel ${i + 1}: ${ch.title}${!unlocked ? ' (gesperrt)' : ''}`);
     card.tabIndex = unlocked ? 0 : -1;
 
     card.innerHTML = `
@@ -495,9 +545,9 @@ function renderHome() {
           <div class="chapter-progress-fill" style="width:${pct}%"></div>
         </div>
         <div class="chapter-meta">
-          <span>${pct}% complete</span>
+          <span>${pct}% abgeschlossen</span>
           <span class="chapter-xp">+${ch.xpReward} XP</span>
-          ${completed ? '<span class="text-green">✓ Done</span>' : ''}
+          ${completed ? '<span class="text-green">✓ Fertig</span>' : ''}
         </div>
       </div>
     `;
@@ -553,11 +603,11 @@ function renderExercise() {
 
   const typeLabels = {
     'multiple-choice': '🔵 Multiple Choice',
-    'fill-blank':      '✏️ Fill in the Blank',
-    'number-input':    '🔢 Number Answer',
-    'true-false':      '✅ True or False',
-    'coord-task':      '📐 Coordinate Task',
-    'step-order':      '🔀 Order the Steps'
+    'fill-blank':      '✏️ Lückentext',
+    'number-input':    '🔢 Zahleneingabe',
+    'true-false':      '✅ Wahr oder Falsch',
+    'coord-task':      '📐 Koordinatenaufgabe',
+    'step-order':      '🔀 Schritte ordnen'
   };
 
   card.innerHTML = `
@@ -592,7 +642,7 @@ function buildCoordCanvas(ex) {
   area.innerHTML = `
     <div class="ex-canvas-wrap" id="coordWrap">
       <canvas id="coordCanvas" aria-label="Coordinate graph"></canvas>
-      <div class="ex-canvas-hint">${ex.inputType === 'click' ? '🖱 Click to place your point' : '👆 Scroll/pinch to zoom'}</div>
+      <div class="ex-canvas-hint">${ex.inputType === 'click' ? '🖱 Klicke, um deinen Punkt zu setzen' : '👆 Scrollen/Pinchen zum Zoomen'}</div>
     </div>
   `;
 
@@ -640,7 +690,7 @@ function buildInputArea(ex) {
       html += `<span>${part.replace(/\n/g, '<br>')}</span>`;
       if (i < parts.length - 1) {
         html += `<input type="text" class="fib-input" id="fibInput${idx}" 
-          placeholder="?" aria-label="blank ${idx + 1}" autocomplete="off">`;
+          placeholder="?" aria-label="Lücke ${idx + 1}" autocomplete="off">`;
         idx++;
       }
     });
@@ -661,7 +711,7 @@ function buildInputArea(ex) {
     area.innerHTML = `
       <div class="num-input-wrap">
         <input type="number" class="num-input" id="numInput"
-          placeholder="Enter answer" step="any" aria-label="Numeric answer">
+          placeholder="Antwort eingeben" step="any" aria-label="Zahleneingabe">
       </div>`;
     const inp = area.querySelector('#numInput');
     if (inp) {
@@ -673,8 +723,8 @@ function buildInputArea(ex) {
   else if (ex.type === 'true-false') {
     area.innerHTML = `
       <div class="tf-wrap">
-        <button class="tf-btn" id="tfTrue" aria-label="True">✅ True</button>
-        <button class="tf-btn" id="tfFalse" aria-label="False">❌ False</button>
+        <button class="tf-btn" id="tfTrue" aria-label="Wahr">✅ Wahr</button>
+        <button class="tf-btn" id="tfFalse" aria-label="Falsch">❌ Falsch</button>
       </div>`;
     ['tfTrue', 'tfFalse'].forEach(id => {
       const btn = document.getElementById(id);
@@ -691,7 +741,7 @@ function buildInputArea(ex) {
     area.innerHTML = `
       <div class="num-input-wrap" style="margin-top:10px">
         <input type="number" class="num-input" id="numInput"
-          placeholder="Enter answer" step="any" aria-label="Coordinate task answer">
+          placeholder="Antwort eingeben" step="any" aria-label="Koordinatenaufgabe Antwort">
         ${ex.inputType === 'click'
           ? `<input type="hidden" id="coordAnswerX"><input type="hidden" id="coordAnswerY">`
           : ''}
@@ -719,7 +769,7 @@ function buildInputArea(ex) {
           </div>`
         ).join('')}
       </div>
-      <p class="text-dim mt-8" style="font-size:12px">Drag to reorder the steps</p>`;
+      <p class="text-dim mt-8" style="font-size:12px">Ziehe die Schritte in die richtige Reihenfolge</p>`;
     initDragDrop(document.getElementById('stepOrderList'));
   }
 }
@@ -760,7 +810,7 @@ function checkAnswer() {
 
   if (ex.type === 'multiple-choice') {
     const sel = document.querySelector('.mc-option.selected');
-    if (!sel) { showToast('Please select an answer!'); return; }
+    if (!sel) { showToast('Bitte wähle eine Antwort!'); return; }
     isCorrect = sel.textContent.trim() === ex.answer;
     document.querySelectorAll('.mc-option').forEach(btn => {
       btn.disabled = true;
@@ -785,7 +835,7 @@ function checkAnswer() {
 
   else if (ex.type === 'number-input' || ex.type === 'coord-task') {
     const inp = document.getElementById('numInput');
-    if (!inp || inp.value === '') { showToast('Please enter a number!'); return; }
+    if (!inp || inp.value === '') { showToast('Bitte gib eine Zahl ein!'); return; }
     const val = parseFloat(inp.value);
     isCorrect = Math.abs(val - ex.answer) < 0.01;
     inp.classList.add(isCorrect ? 'correct' : 'wrong');
@@ -797,7 +847,7 @@ function checkAnswer() {
     const falseBtn = document.getElementById('tfFalse');
     const selTrue  = trueBtn.classList.contains('selected');
     const selFalse = falseBtn.classList.contains('selected');
-    if (!selTrue && !selFalse) { showToast('Please select True or False!'); return; }
+    if (!selTrue && !selFalse) { showToast('Bitte wähle Wahr oder Falsch!'); return; }
     isCorrect = selTrue === ex.answer;
     [trueBtn, falseBtn].forEach(b => b.disabled = true);
     if (isCorrect) {
@@ -853,8 +903,8 @@ function getCorrectAnswerString(ex) {
   if (ex.type === 'multiple-choice') return ex.answer;
   if (ex.type === 'fill-blank') return ex.blanks.join(', ');
   if (ex.type === 'number-input' || ex.type === 'coord-task') return String(ex.answer);
-  if (ex.type === 'true-false') return ex.answer ? 'True' : 'False';
-  if (ex.type === 'step-order') return 'See the correct order above';
+  if (ex.type === 'true-false') return ex.answer ? 'Wahr' : 'Falsch';
+  if (ex.type === 'step-order') return 'Sieh die richtige Reihenfolge oben';
   return '';
 }
 
@@ -888,10 +938,10 @@ function showFeedback(correct, message) {
   const el = document.getElementById('exFeedback');
   el.className = 'ex-feedback ' + (correct ? 'correct-fb' : 'wrong-fb');
   if (correct) {
-    el.innerHTML = `<span class="fb-icon">✓</span><span class="fb-text">Correct! +10 XP</span>`;
+    el.innerHTML = `<span class="fb-icon">✓</span><span class="fb-text">Richtig! +10 XP</span>`;
   } else {
     el.innerHTML = `<span class="fb-icon">✗</span>
-      <span class="fb-text">${message ? message : 'Incorrect'}</span>`;
+      <span class="fb-text">${message ? message : 'Falsch'}</span>`;
   }
 }
 
@@ -905,9 +955,9 @@ function hideFeedback() {
    CELEBRATION OVERLAY
    ══════════════════════════════════════════════ */
 function showCelebration(ch) {
-  document.getElementById('celebTitle').textContent  = `${ch.icon} Chapter Complete!`;
+  document.getElementById('celebTitle').textContent  = `${ch.icon} Kapitel abgeschlossen!`;
   document.getElementById('celebSub').textContent    = ch.title;
-  document.getElementById('celebXP').textContent     = `+${sessionXP} XP earned`;
+  document.getElementById('celebXP').textContent     = `+${sessionXP} XP verdient`;
   document.getElementById('celebStars').textContent  = '⭐⭐⭐';
   document.getElementById('celebrationOverlay').classList.add('active');
   spawnConfetti();
@@ -964,7 +1014,7 @@ function openTeacherPanel() {
 
   // Chapter controls
   const sec1 = document.createElement('div');
-  sec1.innerHTML = '<h3 style="font-size:14px;margin-bottom:12px;color:var(--dim)">CHAPTER CONTROL</h3>';
+  sec1.innerHTML = '<h3 style="font-size:14px;margin-bottom:12px;color:var(--dim)">KAPITELSTEUERUNG</h3>';
 
   CHAPTERS.forEach((ch, i) => {
     const unlocked = isChapterUnlocked(i);
@@ -972,9 +1022,9 @@ function openTeacherPanel() {
     row.className = 'teacher-chapter-row';
     row.innerHTML = `
       <span class="tc-name">${ch.icon} ${ch.title}</span>
-      <span class="tc-badge ${unlocked ? 'unlocked' : 'locked'}">${unlocked ? 'Unlocked' : 'Locked'}</span>
+      <span class="tc-badge ${unlocked ? 'unlocked' : 'locked'}">${unlocked ? 'Freigeschaltet' : 'Gesperrt'}</span>
       <button class="btn btn-sm btn-ghost" onclick="teacherToggleChapter(${i})">
-        ${unlocked ? '🔒 Lock' : '🔓 Unlock'}
+        ${unlocked ? '🔒 Sperren' : '🔓 Freischalten'}
       </button>
     `;
     sec1.appendChild(row);
@@ -987,7 +1037,7 @@ function openTeacherPanel() {
   box.appendChild(hr);
 
   const sec2 = document.createElement('div');
-  sec2.innerHTML = '<h3 style="font-size:14px;margin-bottom:12px;color:var(--dim)">ALL CORRECT ANSWERS</h3>';
+  sec2.innerHTML = '<h3 style="font-size:14px;margin-bottom:12px;color:var(--dim)">ALLE RICHTIGEN ANTWORTEN</h3>';
 
   CHAPTERS.forEach(ch => {
     const al = document.createElement('div');
@@ -1007,9 +1057,9 @@ function openTeacherPanel() {
   box.appendChild(hr2);
   const resetBtn = document.createElement('button');
   resetBtn.className = 'btn btn-ghost btn-full';
-  resetBtn.textContent = '🗑️ Reset All Student Progress';
+  resetBtn.textContent = '🗑️ Alle Schülerfortschritte zurücksetzen';
   resetBtn.onclick = () => {
-    if (confirm('Reset all progress? This cannot be undone.')) {
+    if (confirm('Alle Fortschritte zurücksetzen? Dies kann nicht rückgängig gemacht werden.')) {
       state.xp = 0; state.hearts = 5; state.streak = 0;
       state.chapterProgress = {};
       saveState(); renderHome(); renderHeader();
@@ -1040,7 +1090,8 @@ function openLicenseModal() {
   const key  = localStorage.getItem('lp_license_key') || '—';
   const role = localStorage.getItem('lp_license_role') || 'unknown';
   document.getElementById('licenseKey').textContent = key;
-  document.getElementById('licenseRoleBadge').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+  const roleLabels = { student: 'Schüler/in', teacher: 'Lehrer/in' };
+  document.getElementById('licenseRoleBadge').textContent = roleLabels[role] || role;
   document.getElementById('licenseRoleBadge').className = 'lbadge ' + role;
   document.getElementById('licenseModal').classList.add('active');
 }
