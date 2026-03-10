@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linear Equations – Learning Platform</title>
+  <meta name="description" content="Duolingo-style interactive learning platform for linear equations. Master y = mx + b, slope, graphing, and solving with gamified lessons.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     LICENSE GATE
+     ══════════════════════════════════════════════ -->
+<div id="licenseGate" role="dialog" aria-modal="true" aria-label="License activation">
+  <div class="gate-box">
+    <span class="gate-logo">📐</span>
+    <h1>Linear Equations</h1>
+    <p class="gate-sub">Learning Platform<br>Enter your student or teacher license key to access</p>
+    <input
+      type="text"
+      id="licenseInput"
+      placeholder="e.g. STU-2024-ALPHA"
+      maxlength="30"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
+      aria-label="License key input"
+      onkeydown="if(event.key==='Enter') activateLicense()"
+      oninput="this.value=this.value.toUpperCase()"
+    >
+    <div class="gate-err" id="licenseErr" role="alert" aria-live="polite"></div>
+    <button class="btn btn-primary btn-full" onclick="activateLicense()" aria-label="Activate license">
+      Activate License
+    </button>
+    <p class="gate-note">
+      🔑 Contact your teacher for a license key.<br>
+      <strong style="color:var(--txt)">Demo keys:</strong> <code style="color:#a0d0ff;font-size:11px">STU-LEARN-001</code>
+      &nbsp;|&nbsp; <code style="color:#ffd080;font-size:11px">TCH-MASTER-2024</code>
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN APP
+     ══════════════════════════════════════════════ -->
+<div id="mainApp">
+
+  <!-- ── Header ── -->
+  <header id="appHeader" role="banner">
+    <span class="hdr-logo" aria-hidden="true">📐</span>
+    <div class="hdr-title">
+      <strong>LinEq</strong>
+      <span>Linear Equations</span>
+    </div>
+
+    <div class="hdr-xp" aria-label="Experience points progress">
+      <span class="level-badge" id="hdrLevel">LVL 1</span>
+      <div class="xp-bar-wrap" role="progressbar" aria-label="XP progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="xp-bar-fill" id="hdrXPBar" style="width:0%"></div>
+      </div>
+      <span class="xp-label" id="hdrXPLabel">0 / 100 XP</span>
+    </div>
+
+    <div class="hdr-stats">
+      <span class="hdr-hearts" id="hdrHearts" aria-label="Lives remaining" title="Hearts (lives)">❤️❤️❤️❤️❤️</span>
+      <span class="hdr-streak" id="hdrStreak" aria-label="Day streak" title="Daily streak"></span>
+      <button
+        class="btn btn-ghost btn-sm"
+        id="teacherBtn"
+        style="display:none"
+        onclick="openTeacherPanel()"
+        aria-label="Open teacher panel"
+      >👩‍🏫</button>
+      <button
+        class="btn btn-ghost btn-sm"
+        onclick="openLicenseModal()"
+        aria-label="View license information"
+        title="License"
+      >🔑</button>
+    </div>
+  </header>
+
+  <!-- ── Home Screen ── -->
+  <main id="homeScreen" class="screen active" aria-label="Chapter map">
+    <div class="home-welcome">
+      <h2>📚 Choose a Chapter</h2>
+      <p>Complete chapters to unlock the next level!</p>
+    </div>
+    <div class="chapter-path" id="chapterPath" role="list" aria-label="Learning chapters">
+      <!-- Rendered by platform.js -->
+    </div>
+  </main>
+
+  <!-- ── Exercise Screen ── -->
+  <div id="exerciseScreen" class="screen" role="main" aria-label="Exercise">
+    <div class="ex-header">
+      <button class="ex-back" onclick="renderHome()" aria-label="Back to chapter map" title="Back">‹</button>
+      <div class="ex-progress-wrap" role="progressbar" aria-label="Exercise progress" id="exProgressBar">
+        <div class="ex-progress-fill" id="exProgressFill" style="width:0%"></div>
+      </div>
+      <span class="ex-xp-session" id="exSessionXP" aria-live="polite">+0 XP</span>
+    </div>
+
+    <p id="exChapterTitle" style="font-size:12px;color:var(--dim);margin-bottom:12px;padding:0 0 0 2px"></p>
+
+    <!-- Exercise card (rebuilt per question) -->
+    <div id="exCard" class="ex-card" aria-live="polite">
+      <!-- Rendered by platform.js -->
+    </div>
+
+    <!-- Coordinate canvas area (rebuilt per question) -->
+    <!-- (inside exCard via JS) -->
+
+    <!-- Feedback strip -->
+    <div id="exFeedback" class="ex-feedback" role="alert" aria-live="assertive"></div>
+
+    <!-- Action buttons -->
+    <div class="ex-actions">
+      <button
+        id="checkBtn"
+        class="btn btn-primary"
+        onclick="checkAnswer()"
+        aria-label="Check answer"
+        style="min-width:140px"
+      >Check Answer</button>
+      <button
+        id="continueBtn"
+        class="btn btn-green"
+        onclick="continueExercise()"
+        aria-label="Continue to next exercise"
+        style="display:none;min-width:140px"
+      >Continue →</button>
+    </div>
+  </div>
+
+</div><!-- /#mainApp -->
+
+<!-- ══════════════════════════════════════════════
+     CELEBRATION OVERLAY
+     ══════════════════════════════════════════════ -->
+<div id="confettiWrap" class="confetti-wrap" aria-hidden="true"></div>
+
+<div id="celebrationOverlay" role="dialog" aria-modal="true" aria-label="Chapter complete">
+  <div class="celeb-stars" id="celebStars" aria-hidden="true">⭐⭐⭐</div>
+  <div class="celeb-icon" aria-hidden="true">🎉</div>
+  <h2 class="celeb-title" id="celebTitle">Chapter Complete!</h2>
+  <p class="celeb-sub" id="celebSub"></p>
+  <div class="celeb-xp" id="celebXP" aria-label="XP earned"></div>
+  <button class="btn btn-primary" onclick="closeCelebration()" aria-label="Continue to chapter map" style="min-width:180px;font-size:16px">
+    Continue 🎯
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     HEARTS OUT MODAL
+     ══════════════════════════════════════════════ -->
+<div id="heartsModal" role="dialog" aria-modal="true" aria-label="Out of hearts">
+  <div class="hearts-box">
+    <div style="font-size:48px;margin-bottom:12px">💔</div>
+    <h2>Out of Hearts!</h2>
+    <p>You've used all your hearts. Hearts are restored when you complete a chapter, or you can continue anyway with reduced lives.</p>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-ghost btn-full" onclick="closeHeartsModal(false)" aria-label="Go back to chapter map">← Go Back</button>
+      <button class="btn btn-primary btn-full" onclick="closeHeartsModal(true)" aria-label="Continue with reduced hearts">Continue Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TEACHER PANEL
+     ══════════════════════════════════════════════ -->
+<div id="teacherPanel" role="dialog" aria-modal="true" aria-label="Teacher panel">
+  <div class="teacher-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <h2>👩‍🏫 Teacher Panel</h2>
+        <p class="sub">Manage chapters and view all answers</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="closeTeacherPanel()" aria-label="Close teacher panel">✕ Close</button>
+    </div>
+    <div id="teacherContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     LICENSE INFO MODAL
+     ══════════════════════════════════════════════ -->
+<div id="licenseModal" role="dialog" aria-modal="true" aria-label="License information">
+  <div class="license-box">
+    <h2>🔑 Your License</h2>
+    <span class="lbadge student" id="licenseRoleBadge">Student</span>
+    <code class="lk" id="licenseKey"></code>
+    <p class="lr">This key grants you access to all chapters and exercises.</p>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-ghost btn-full" onclick="closeLicenseModal()" aria-label="Close">Close</button>
+      <button class="btn btn-ghost btn-full" onclick="deactivateLicense()" aria-label="Deactivate license" style="color:var(--acc)">Deactivate</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TOAST
+     ══════════════════════════════════════════════ -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ── Scripts ── -->
+<script src="coord-embed.js"></script>
+<script src="platform.js"></script>
+
+</body>
+</html>
