@@ -421,36 +421,142 @@ class CoordEmbed {
     return parseFloat(n.toFixed(2)).toString();
   }
 
-  // ── Expression evaluator ─────────────────────────────────────────
+  // ── Expression evaluator (recursive descent parser) ──────────────
   // Supports: +, -, *, /, ^, x, abs(), sqrt(), sin(), cos(), implicit mult
+  // No eval / Function constructor — fully sandboxed.
   _evalExpr(raw, xVal) {
-    // Normalize
-    let expr = raw.trim()
+    const src = raw.trim()
       .toLowerCase()
-      // Strip "y =" prefix if present
-      .replace(/^y\s*=\s*/, '')
-      // Implicit multiplication: 2x → 2*x, 2(… → 2*(…, x( → x*(
-      .replace(/(\d)(x)/g, '$1*$2')
-      .replace(/(\d)\(/g, '$1*(')
-      .replace(/(x)\(/g, '$1*(')
-      // Power operator
-      .replace(/\^/g, '**')
-      // trig / math functions
-      .replace(/abs\(/g, 'Math.abs(')
-      .replace(/sqrt\(/g, 'Math.sqrt(')
-      .replace(/sin\(/g, 'Math.sin(')
-      .replace(/cos\(/g, 'Math.cos(')
-      .replace(/pi/g, String(Math.PI))
-      .replace(/π/g, String(Math.PI));
+      .replace(/^y\s*=\s*/, '')   // strip optional "y =" prefix
+      .replace(/\s+/g, '')        // remove spaces
+      .replace(/π/g, 'pi');
 
-    // Security: only allow safe characters
-    const safe = expr.replace(/Math\.\w+/g, '').replace(/x/g, '0');
-    if (!/^[\d\s\+\-\*\/\.\(\)]+$/.test(safe)) {
-      throw new Error('unsafe expression');
+    const tokens = this._tokenize(src);
+    let pos = 0;
+
+    const peek  = () => tokens[pos];
+    const eat   = () => tokens[pos++];
+
+    // Forward declarations
+    let parseExpr;
+
+    // atom: number | 'x' | 'pi' | func '(' expr ')' | '(' expr ')'
+    const parseAtom = () => {
+      const t = peek();
+      if (t === undefined) throw new Error('unexpected end');
+
+      // Parenthesised group
+      if (t === '(') { eat(); const v = parseExpr(); if (peek() !== ')') throw new Error('missing )'); eat(); return v; }
+
+      // Unary minus
+      if (t === '-') { eat(); return -parseAtom(); }
+      if (t === '+') { eat(); return parseAtom(); }
+
+      // Named functions
+      if (t === 'abs' || t === 'sqrt' || t === 'sin' || t === 'cos') {
+        eat();
+        if (peek() !== '(') throw new Error(`expected ( after ${t}`);
+        eat();
+        const arg = parseExpr();
+        if (peek() !== ')') throw new Error('missing )');
+        eat();
+        if (t === 'abs')  return Math.abs(arg);
+        if (t === 'sqrt') return Math.sqrt(arg);
+        if (t === 'sin')  return Math.sin(arg);
+        if (t === 'cos')  return Math.cos(arg);
+      }
+
+      // Variable x
+      if (t === 'x')  { eat(); return xVal; }
+      // Constant pi
+      if (t === 'pi') { eat(); return Math.PI; }
+
+      // Number literal
+      if (/^-?\d/.test(t) || /^\d/.test(t)) {
+        eat();
+        const n = parseFloat(t);
+        if (isNaN(n)) throw new Error('not a number: ' + t);
+        return n;
+      }
+
+      throw new Error('unexpected token: ' + t);
+    };
+
+    // power: atom ('^' atom)*
+    const parsePow = () => {
+      let base = parseAtom();
+      while (peek() === '^') { eat(); const exp = parseAtom(); base = Math.pow(base, exp); }
+      return base;
+    };
+
+    // Handle implicit multiplication: two adjacent atoms/functions/vars
+    const parseImplicit = () => {
+      let v = parsePow();
+      // If next token starts a new atom (number, x, pi, func, '('), multiply
+      const t = peek();
+      if (t !== undefined && t !== '+' && t !== '-' && t !== '*' && t !== '/' && t !== '^' && t !== ')') {
+        v *= parseImplicit();
+      }
+      return v;
+    };
+
+    // mul/div
+    const parseMulDiv = () => {
+      let v = parseImplicit();
+      while (peek() === '*' || peek() === '/') {
+        const op = eat();
+        const r = parseImplicit();
+        v = op === '*' ? v * r : v / r;
+      }
+      return v;
+    };
+
+    // add/sub
+    parseExpr = () => {
+      let v = parseMulDiv();
+      while (peek() === '+' || peek() === '-') {
+        const op = eat();
+        const r = parseMulDiv();
+        v = op === '+' ? v + r : v - r;
+      }
+      return v;
+    };
+
+    const result = parseExpr();
+    if (pos < tokens.length) throw new Error('unexpected token after expression: ' + tokens[pos]);
+    return result;
+  }
+
+  // Tokenizer: splits expression string into an array of tokens
+  _tokenize(expr) {
+    const tokens = [];
+    let i = 0;
+    while (i < expr.length) {
+      // Skip whitespace
+      if (/\s/.test(expr[i])) { i++; continue; }
+      // Number (integer or decimal)
+      if (/\d/.test(expr[i]) || (expr[i] === '.' && /\d/.test(expr[i + 1]))) {
+        let num = '';
+        while (i < expr.length && (/\d/.test(expr[i]) || expr[i] === '.')) { num += expr[i++]; }
+        tokens.push(num);
+        continue;
+      }
+      // Named tokens (functions, constants, variable)
+      if (/[a-z]/.test(expr[i])) {
+        let word = '';
+        while (i < expr.length && /[a-z]/.test(expr[i])) { word += expr[i++]; }
+        // Only allow known identifiers
+        if (!['x', 'pi', 'abs', 'sqrt', 'sin', 'cos'].includes(word)) {
+          throw new Error('unknown identifier: ' + word);
+        }
+        tokens.push(word);
+        continue;
+      }
+      // Operators and parentheses
+      if ('+-*/^()'.includes(expr[i])) { tokens.push(expr[i++]); continue; }
+      throw new Error('illegal character: ' + expr[i]);
     }
-
-    // eslint-disable-next-line no-new-func
-    return Function('"use strict"; var x=' + xVal + '; return (' + expr + ');')();
+    return tokens;
   }
 
   // ── Public API ───────────────────────────────────────────────────

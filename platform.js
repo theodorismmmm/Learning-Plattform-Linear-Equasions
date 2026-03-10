@@ -704,9 +704,12 @@ function buildInputArea(ex) {
   }
 
   else if (ex.type === 'step-order') {
-    // Build draggable list (shuffled)
-    const shuffled = [...ex.steps].map((s, i) => ({ text: s, origIdx: i }))
-      .sort(() => Math.random() - 0.5);
+    // Build draggable list (Fisher-Yates shuffle for unbiased randomization)
+    const shuffled = [...ex.steps].map((s, i) => ({ text: s, origIdx: i }));
+    for (let k = shuffled.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [shuffled[k], shuffled[j]] = [shuffled[j], shuffled[k]];
+    }
     area.innerHTML = `
       <div class="step-order-wrap" id="stepOrderList">
         ${shuffled.map((s, i) =>
